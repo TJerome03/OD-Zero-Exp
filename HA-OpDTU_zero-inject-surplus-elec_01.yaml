@@ -70,7 +70,6 @@ action:
         data_template:
           entity_id: !input number_dtu_limit
           value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_dtu_output)|float()|abs()))}}"
-
     else:
       - service: input_number.set_value
         data_template:
