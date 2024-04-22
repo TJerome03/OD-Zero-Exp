@@ -1,11 +1,11 @@
 blueprint:
-  name: OpenDTU Zero export surplus elect
-  description: "\n ## Inspiration : OpenDTU Zero Export\n." 
+  name: Open DTU - Zero Export
+  description: "\n ## Open-DTU Zero Export\n"
   domain: automation
   input:
     sensor_grid_export:
       name: Grid-Export Sensor Entity
-      description: Select a sensor displaying your total current grid-export wattage. (for example a Shelly 3EM). The selected entity MUST display a NEGATIVE value for the automation to work properly.
+      description: Select a sensor displaying your total current grid-export wattage. (for example a Shelly 3EM). The selected entity MUST display a positive value for the automation to work properly.
       selector:
         entity:
     sensor_dtu_output:
@@ -60,7 +60,7 @@ trigger:
     entity_id: !input sensor_grid_export
 condition:
   - condition: template
-    value_template: "{{(states(sensor_grid_export)|float()|abs()) < '0'}}"
+        value_template: "{{(states(sensor_grid_export)|float()|abs()) < '0'}}"
 action:
   - if:
       - condition: template
@@ -69,6 +69,6 @@ action:
       - service: input_number.set_value
         data_template:
           entity_id: !input number_dtu_limit
-          value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_dtu_output)|float()|abs())}}"
+          value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_dtu_output)|float()|abs()))}}"
 mode: restart
 max_exceeded: silent
