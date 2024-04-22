@@ -60,11 +60,11 @@ trigger:
     entity_id: !input sensor_grid_export
 condition:
   - condition: template
-        value_template: "{{(states(sensor_grid_export)|float()|abs()) < '0'}}"
+        value_template: "{{((states(sensor_grid_export)|float()|abs()) < '0')}}"
 action:
   - if:
       - condition: template
-        value_template: "{{(states(sensor_grid_export)|float()|abs()) < '0'}}"
+        value_template: "{{((states(sensor_grid_export)|float()|abs()) < '0')}}"
     then:
       - service: input_number.set_value
         data_template:
