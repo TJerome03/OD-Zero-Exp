@@ -59,7 +59,7 @@ trigger:
   - platform: state
     entity_id: !input sensor_grid_export
 condition:
- - condition: or
+ - condition:
     conditions:
     - condition: template
         value_template: "{{(states(sensor_grid_export)|float()|abs()) < 0}}"
