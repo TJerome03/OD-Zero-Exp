@@ -1,5 +1,5 @@
 blueprint:
-  name: OpenDTU : Zero exportation du surplus electricite
+  name: OpenDTU Zero export surplus elect
   description: "\n ## Inspiration : OpenDTU Zero Export\n." 
   domain: automation
   input:
