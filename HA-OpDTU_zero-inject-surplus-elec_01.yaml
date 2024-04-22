@@ -72,9 +72,10 @@ action:
           value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_dtu_output)|float()|abs()))}}"
 
     else:
+      - service: input_number.set_value
         data_template:
           entity_id: !input number_dtu_limit
-          value: 150
+          value: "{{((input_dtu_max)|float()|abs())}}"
 
 mode: restart
 max_exceeded: silent
