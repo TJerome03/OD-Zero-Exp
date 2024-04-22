@@ -48,6 +48,7 @@ blueprint:
           step: 1
           unit_of_measurement: W
           mode: box
+          
 variables:
   sensor_grid_export: !input sensor_grid_export
   sensor_dtu_output: !input sensor_dtu_output
@@ -55,12 +56,11 @@ variables:
   input_dtu_max: !input input_dtu_max
   input_user_min: !input input_user_min
   input_user_max: !input input_user_max
+  
 trigger:
   - platform: state
     entity_id: !input sensor_grid_export
-condition:
-    - condition:
-        value_template: "{{(states(sensor_grid_export)|float()|abs()) < 0}}"
+            
 action:
   - if:
       - condition: template
@@ -70,5 +70,6 @@ action:
         data_template:
           entity_id: !input number_dtu_limit
           value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_dtu_output)|float()|abs()))}}"
+
 mode: restart
 max_exceeded: silent
