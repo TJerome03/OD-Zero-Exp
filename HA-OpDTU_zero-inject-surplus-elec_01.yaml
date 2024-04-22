@@ -1,0 +1,75 @@
+blueprint:
+  name: OpenDTU : Zero exportation du surplus electricite
+  description: "\n ## Inspiration : OpenDTU Zero Export\n." 
+  domain: automation
+  input:
+    sensor_grid_export:
+      name: Grid-Export Sensor Entity
+      description: Select a sensor displaying your total current grid-export wattage. (for example a Shelly 3EM). The selected entity MUST display a NEGATIVE value for the automation to work properly.
+      selector:
+        entity:
+    sensor_dtu_output:
+      name: Open-DTU Output Entity
+      description: Select the output-entity provided by Open-DTU displaying the current output wattage.
+      selector:
+        entity:
+    number_dtu_limit:
+      name: Open-DTU Limit Entity (Non Persistent, Absolute)
+      description: Select the limit-entity provided by Open-DTU. This entity is expected to be a "Input-Number" type. It's max value should reflect the inverter's max output.
+      selector:
+        entity:
+    input_dtu_max:
+      name: Open-DTU Max Output (Enter manually)
+      description: Enter your inverter's max output wattage (For example, 1600 for Hoymiles HMS-1600 inverters). This should be identical with the DTU-Limiter's max value.
+      selector:
+        number:
+          min: 0
+          max: 999999
+          step: 1
+          unit_of_measurement: W
+          mode: box
+    input_user_min:
+      name: Zero-Range-Minimum
+      description: Enter the lower cap of the power-export-range which the automation will attempt to keep. In this case "lower" means the smallest export-value (for example 50w export). The minimum is 0. 
+      selector:
+        number:
+          min: 0
+          max: 999999
+          step: 1
+          unit_of_measurement: W
+          mode: box
+    input_user_max:
+      name: Zero-Range-Maximum
+      description: Enter the upper cap of the power-export-range which the automation will attempt to keep. It is suggested to keep a 100 W range between the min & max values. However, the blueprint does not enforce this.
+      selector:
+        number:
+          min: 0
+          max: 999999
+          step: 1
+          unit_of_measurement: W
+          mode: box
+variables:
+  sensor_grid_export: !input sensor_grid_export
+  sensor_dtu_output: !input sensor_dtu_output
+  number_dtu_limit: !input number_dtu_limit
+  input_dtu_max: !input input_dtu_max
+  input_user_min: !input input_user_min
+  input_user_max: !input input_user_max
+trigger:
+  - platform: state
+    entity_id: !input sensor_grid_export
+condition:
+  - condition: template
+    value_template: "{{(states(sensor_grid_export)|float()|abs()) < 0}}"
+
+action:
+  - if:
+      - condition: template
+        value_template: "{{(states(sensor_grid_export)|float()|abs()) < 0}}"
+    then:
+      - service: input_number.set_value
+        data_template:
+          entity_id: !input number_dtu_limit
+          value: "{{((states(sensor_grid_export)|float()|abs()) + (states(sensor_grid_export)|float()|abs())}}"
+mode: restart
+max_exceeded: silent
