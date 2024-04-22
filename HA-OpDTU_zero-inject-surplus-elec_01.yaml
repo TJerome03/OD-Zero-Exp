@@ -28,16 +28,6 @@ blueprint:
           step: 1
           unit_of_measurement: W
           mode: box
-    input_user_min:
-      name: Zero-Range-Minimum
-      description: Enter the lower cap of the power-export-range which the automation will attempt to keep. In this case "lower" means the smallest export-value (for example 50w export). The minimum is 0. 
-      selector:
-        number:
-          min: 0
-          max: 999999
-          step: 1
-          unit_of_measurement: W
-          mode: box
     input_user_max:
       name: Zero-Range-Maximum
       description: Enter the upper cap of the power-export-range which the automation will attempt to keep. It is suggested to keep a 100 W range between the min & max values. However, the blueprint does not enforce this.
@@ -54,7 +44,6 @@ variables:
   sensor_dtu_output: !input sensor_dtu_output
   number_dtu_limit: !input number_dtu_limit
   input_dtu_max: !input input_dtu_max
-  input_user_min: !input input_user_min
   input_user_max: !input input_user_max
   
 trigger:
@@ -74,7 +63,7 @@ action:
       - service: input_number.set_value
         data_template:
           entity_id: !input number_dtu_limit
-          value: "{{((input_dtu_max)|float()|abs())}}"
+          value: "{{((input_user_max)|float()|abs())}}"
 
 mode: restart
 max_exceeded: silent
